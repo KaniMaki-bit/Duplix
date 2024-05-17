@@ -1,6 +1,7 @@
 from pythonparser import diagnostic, source, lexer
 from typing import Tuple, Any, Dict
 import difflib as dl
+import ast
 
 PYTHON_VERSION = (3,6)
 PARAMETERIZABLE_TYPES = {
@@ -85,6 +86,38 @@ BUILT_INT_FUNCTIONS = {
 PARAMETERIZED_REPLACEMENT = "P"
 MIN_MATCH_BLOCK_SIZE = 1
 
+def non_blanc_lines(code: str) -> int:
+    return sum(1 for line in code.split('\n') if line.strip() != '')
+
+def get_variable_names(code_ast: ast.AST) -> list[str]:
+    variable_names = []
+
+    class VariableNameExtractor(ast.NodeVisitor):
+        def visit_Name(self, node):
+            if isinstance(node.ctx, ast.Store):
+                variable_names.append(node.id)
+            self.generic_visit(node)
+
+    extractor = VariableNameExtractor()
+    extractor.visit(code_ast)
+    return variable_names
+
+def average_variable_length(code: str) -> float:
+    variable_names = get_variable_names(code)
+    if not variable_names:
+        return 0
+    total_length = sum(len(name) for name in variable_names)
+    average_length = total_length / len(variable_names)
+    return average_length
+
+class Metrics:
+    def __init__(self, code: str) -> None:
+        code_ast = ast.parse(code)
+
+        # Layout
+        self.non_blanc_lines = non_blanc_lines(code)
+        self.avg_var_length = average_variable_length(code_ast)
+
 class Archivos:
     def __init__(self, archivos: Dict[str, str]) -> None:
         self.archivos = {matricula: Archivo(matricula, codigo) for matricula, codigo in archivos.items()}
@@ -104,6 +137,7 @@ class Archivo:
     def __init__(self, id: str, code: str) -> None:
         self.id = id
         self.code = code
+        self.metrics = Metrics(code)
         self.tokens = code_tokens(code)
         self.parameterized_tokens = parameterized_tokens(self.tokens)
 
