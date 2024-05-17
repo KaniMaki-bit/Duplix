@@ -1,9 +1,9 @@
 from flask import Flask, request, jsonify
 from http import HTTPStatus
-from models import *
+from analyzer import *
 
 app = Flask(__name__)
-archivos = None
+archivos: Archivos = None
 
 @app.route('/ping', methods=['GET'])
 def ping():

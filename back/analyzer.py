@@ -1,6 +1,6 @@
 from pythonparser import diagnostic, source, lexer
+from typing import Tuple, Any, Dict
 import difflib as dl
-from typing import Tuple, Any
 
 PYTHON_VERSION = (3,6)
 PARAMETERIZABLE_TYPES = {
@@ -83,6 +83,32 @@ BUILT_INT_FUNCTIONS = {
     "__import__"
 }
 PARAMETERIZED_REPLACEMENT = "P"
+MIN_MATCH_BLOCK_SIZE = 1
+
+class Archivos:
+    def __init__(self, archivos: Dict[str, str]) -> None:
+        self.archivos = {matricula: Archivo(matricula, codigo) for matricula, codigo in archivos.items()}
+
+    def estudiantes(self) -> list[str]:
+        return [matricula for matricula in self.archivos]
+    
+    # TODO
+    def heatmap(self):
+        pass
+
+    # TODO
+    def comparacion(self, id_1: str, id_2: str):
+        pass
+
+class Archivo:
+    def __init__(self, id: str, code: str) -> None:
+        self.id = id
+        self.code = code
+        self.tokens = code_tokens(code)
+        self.parameterized_tokens = parameterized_tokens(self.tokens)
+
+    def __repr__(self) -> str:
+        return f"Archivo({self.id}, {self.code})"
 
 def code_tokens(code_str: str) -> list[lexer.Token]:
     """
@@ -131,19 +157,20 @@ def matching_blocks(sequence1: list, sequence2: list, min_block_size: int) -> Tu
 def insert (source_str: str, insert_str: str, pos: int) -> str:
     return source_str[:pos] + insert_str + source_str[pos:]
 
-def marked_code(code1_str: str, code2_str: str, code1_tokens: list[lexer.Token], code2_tokens: list[lexer.Token], matches: list[dl.Match]) -> Tuple[str, str]:
+def mark_code(file1: Archivo, file2: Archivo, matches: list[dl.Match]) -> Tuple[str, str]:
     corrimiento_str1, corrimiento_str2 = 0, 0
+    code1_str, code2_str = file1.code, file2.code
 
     for index, match in enumerate(matches):
         a = match.a
         b = match.b
         n = match.size
 
-        str_start_index_1 = code1_tokens[a].loc.begin_pos
-        str_end_index_1 = code1_tokens[a + n - 1].loc.end_pos
+        str_start_index_1 = file1.tokens[a].loc.begin_pos
+        str_end_index_1 = file1.tokens[a + n - 1].loc.end_pos
 
-        str_start_index_2 = code2_tokens[b].loc.begin_pos
-        str_end_index_2 = code2_tokens[b + n - 1].loc.end_pos
+        str_start_index_2 = file2.tokens[b].loc.begin_pos
+        str_end_index_2 = file2.tokens[b + n - 1].loc.end_pos
 
         left_mark = "{{{"
         right_mark = f"}}}}}}{index}"
@@ -160,13 +187,11 @@ def marked_code(code1_str: str, code2_str: str, code1_tokens: list[lexer.Token],
 
     return code1_str, code2_str
 
-code1 = open("test_files/test1.py").read()
-code2 = open("test_files/test2.py").read()
+def compare_files(file1: Archivo, file2: Archivo):
+    similar_code_blocks, similarity_ratio = matching_blocks(file1.parameterized_tokens, file2.parameterized_tokens, MIN_MATCH_BLOCK_SIZE)
+    file1_code_marked, file2_code_marked = mark_code(file1, file2, similar_code_blocks)
 
-t1 = code_tokens(code1)
-pt1 = parameterized_tokens(t1)
+    return file1_code_marked, file2_code_marked, similarity_ratio
 
-t2 = code_tokens(code2)
-pt2 = parameterized_tokens(t2)
-
-blocks, ratio = matching_blocks(pt1, pt2, 1)
+file1 = Archivo("A01234567", open("test_files/test1.py").read())
+file2 = Archivo("A06969420", open("test_files/test2.py").read())
