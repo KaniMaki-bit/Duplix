@@ -6,14 +6,3 @@ class Archivos:
 
     def estudiantes(self) -> list[str]:
         return list(self.archivos)
-    
-class Token:
-    """
-    Representacion simplificada de `lexer.Token` que solo guarda su tipo y valor para eliminar ruido
-    """
-    def __init__(self, kind: str, value: Any) -> None:
-        self.kind = kind
-        self.value = value
-
-    def __repr__(self) -> str:
-        return f"Token(kind={self.kind}, value={self.value})"
