@@ -435,13 +435,18 @@ def metrics_deltas(metric_1: Metrics, metric_2: Metrics):
         for metric in deltas[metrics_type]:
             delta_ = deltas[metrics_type][metric]['delta']
 
-            if delta_ == DELTAS[metric]:
-                deltas[metrics_type][metric]['clasificacion'] = "Iguales"
-                iguales += 1
-            elif delta_ < DELTAS[metric]:
-                deltas[metrics_type][metric]['clasificacion'] = "Similares"
-                similares += 1
-            elif delta_ > DELTAS[metric]:
+            # TODO
+            # Si <= DELTA e igual que el otro valor -> iguales
+            # Si <= Delta y diferente que el otro valor -> similares
+            # Si > Delta -> diferentes
+            if delta_ <= DELTAS[metric]:
+                if deltas[metrics_type][metric]['archivo 1'] == deltas[metrics_type][metric]['archivo 2']:
+                    deltas[metrics_type][metric]['clasificacion'] = "Iguales"
+                    iguales += 1
+                else:
+                    deltas[metrics_type][metric]['clasificacion'] = "Similares"
+                    similares += 1
+            else:
                 deltas[metrics_type][metric]['clasificacion'] = "Diferentes"
                 diferentes += 1
 
