@@ -84,7 +84,7 @@ BUILT_INT_FUNCTIONS = {
     "__import__"
 }
 PARAMETERIZED_REPLACEMENT = "P"
-MIN_MATCH_BLOCK_SIZE = 1
+MIN_MATCH_BLOCK_SIZE = 10
 DELTAS = {
     "Numero de lineas no vacias": 5,
     "Longitud promedio de variables": 2,
@@ -285,7 +285,10 @@ class Archivos:
             for matricula2, archivo2 in self.archivos.items():
                 comparacion_ = comparar_archivos(archivo1, archivo2)
                 self.comparaciones[matricula1][matricula2] = comparacion_
-                self.heatmap[matricula1][matricula2] = comparacion_['similitud']
+                if matricula1 == matricula2:
+                    self.heatmap[matricula1][matricula2] = 1
+                    continue
+                self.heatmap[matricula1][matricula2] = round(comparacion_['similitud'], 2)
 
     def estudiantes(self) -> list[str]:
         return [matricula for matricula in self.archivos]
@@ -435,10 +438,6 @@ def metrics_deltas(metric_1: Metrics, metric_2: Metrics):
         for metric in deltas[metrics_type]:
             delta_ = deltas[metrics_type][metric]['delta']
 
-            # TODO
-            # Si <= DELTA e igual que el otro valor -> iguales
-            # Si <= Delta y diferente que el otro valor -> similares
-            # Si > Delta -> diferentes
             if delta_ <= DELTAS[metric]:
                 if deltas[metrics_type][metric]['archivo 1'] == deltas[metrics_type][metric]['archivo 2']:
                     deltas[metrics_type][metric]['clasificacion'] = "Iguales"
