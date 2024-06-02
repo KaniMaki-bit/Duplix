@@ -1,9 +1,12 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 from http import HTTPStatus
 from analyzer import Archivos
 
 app = Flask(__name__)
 archivos: Archivos = None
+
+CORS(app)
 
 @app.route('/ping', methods=['GET'])
 def ping():
