@@ -1,6 +1,9 @@
+import { PingAPI } from "../../services/ping";
 import UploadView from "./view";
 
 const UploadPage = () => {
+
+    PingAPI();
 
     const handleUpload = () => {
 
