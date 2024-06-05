@@ -291,7 +291,7 @@ const StudentsView: React.FC = () => {
                                             color: 'white',
                                         }}
                                     >
-                                        En este apartado se muestra un análisis de métricas de la categoría del flujo de control de cada uno de los archivos.
+                                        En este apartado se muestra un análisis de métricas de la categoría del flujo de control de cada uno de los archivos, donde se describe la secuencia en la que se ejecutan las instrucciones.
                                     </Typography>
                                 </Grid>
                                 <TableContainer component={Paper}>
@@ -331,7 +331,7 @@ const StudentsView: React.FC = () => {
                                             color: 'white',
                                         }}
                                     >
-                                        En este último apartado se muestra un análisis de métricas de la categoría de layout de cada uno de los archivos.
+                                        En este último apartado se muestra un análisis de métricas de la categoría de layout, donde se analisa la organización y la disposición visual del código.
                                     </Typography>
                                 </Grid>
                                 <TableContainer component={Paper}>
