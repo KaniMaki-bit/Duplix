@@ -324,7 +324,7 @@ def comparar_archivos(archivo1: Archivo, archivo2: Archivo):
             "clasificacion": deltas_clasificacion,
             "similitud": deltas_ratio
         },
-        "similitud": (block_ratio * 0.6) + (deltas_ratio * 0.4)
+        "similitud": round((block_ratio * 0.6) + (deltas_ratio * 0.4), 2)
     }
 
 def delta(a, b) -> float:
