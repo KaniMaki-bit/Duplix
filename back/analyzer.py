@@ -1,5 +1,5 @@
 from pythonparser import diagnostic, source, lexer
-from typing import Dict, Tuple, Any
+from typing import Dict, Tuple, Any, List
 import ast
 import difflib as dl
 
@@ -111,7 +111,7 @@ DELTAS = {
 def non_blanc_lines(code: str) -> int:
     return sum(1 for line in code.split('\n') if line.strip() != '')
 
-def get_variable_names(code_ast: ast.AST) -> list[str]:
+def get_variable_names(code_ast: ast.AST) -> List[str]:
     variable_names = []
 
     class VariableNameExtractor(ast.NodeVisitor):
@@ -290,7 +290,7 @@ class Archivos:
                     continue
                 self.heatmap[matricula1][matricula2] = round(comparacion_['similitud'], 2)
 
-    def estudiantes(self) -> list[str]:
+    def estudiantes(self) -> List[str]:
         return [matricula for matricula in self.archivos]
 
     def comparacion(self, id_1: str, id_2: str):
@@ -483,7 +483,7 @@ def metrics_deltas(metric_1: Metrics, metric_2: Metrics):
 def _insert(source_str: str, insert_str: str, pos: int) -> str:
     return source_str[:pos] + insert_str + source_str[pos:]
 
-def code_tokens(code_str: str) -> list[lexer.Token]:
+def code_tokens(code_str: str) -> List[lexer.Token]:
     """
     Toma el codigo de un archivo y regresa una lista de sus `lexer.Token`
     """
@@ -512,7 +512,7 @@ def parameterize_token(token: lexer.Token) -> Tuple[str, Any]:
 
     return parameterized_token
 
-def parameterized_tokens(tokens: list[lexer.Token]) -> list[Tuple[str, Any]]:
+def parameterized_tokens(tokens: List[lexer.Token]) -> List[Tuple[str, Any]]:
     """
     Dada una lista de Tokens, conserva unicamente el tipo y valor de los tokens.
     Tambien, parametriza los tokens de cierto tipo (float, int, strdata, ident), cambiando su valor a 'P'
@@ -520,14 +520,26 @@ def parameterized_tokens(tokens: list[lexer.Token]) -> list[Tuple[str, Any]]:
     """
     return [parameterize_token(token) for token in tokens]
 
-def matching_blocks(sequence1: list, sequence2: list, min_block_size: int) -> Tuple[list[dl.Match], float]:
+def matching_blocks(sequence1: List, sequence2: List, min_block_size: int) -> Tuple[List[dl.Match], float]:
     """
     Regresa todos los bloques identicos entre ambas secuencias cuya longitud sea mayor o igual a `min_block_size` y similaridad (0 - 1)
     """
     matcher = dl.SequenceMatcher(None, sequence1, sequence2)
-    return [block for block in matcher.get_matching_blocks() if block.size >= min_block_size], matcher.ratio()
+    min_len = min(len(sequence1), len(sequence2))
+    blocks_len = 0
 
-def mark_code(file1: Archivo, file2: Archivo, matches: list[dl.Match]) -> Tuple[str, str]:
+    blocks = []
+
+    for block in matcher.get_matching_blocks():
+        if block.size >= min_block_size:
+            blocks.append(block)
+            blocks_len += block.size
+
+    ratio = blocks_len / min_len
+
+    return blocks, ratio
+
+def mark_code(file1: Archivo, file2: Archivo, matches: List[dl.Match]) -> Tuple[str, str]:
     corrimiento_str1, corrimiento_str2 = 0, 0
     code1_str, code2_str = file1.code, file2.code
 
