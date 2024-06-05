@@ -213,26 +213,26 @@ const StudentsView: React.FC = () => {
                                         p: 1
                                     }}>
                                     <Typography variant="h5">
-                                        Análisis por métricas
+                                        Resumen de similitud
                                     </Typography>
                                 </Grid>
                                 <TableContainer component={Paper}>
                                     <Table>
                                         <TableBody>
                                             <TableRow>
-                                                <TableCell>Porcentaje de similitud global:</TableCell>
-                                                <TableCell>{res.similitud}</TableCell>
-                                            </TableRow>
-                                            <TableRow>
                                                 <TableCell>Porcentaje de similitud por bloques:</TableCell>
-                                                <TableCell>{res.codigo.similitud}</TableCell>
+                                                <TableCell>{res.codigo.similitud*100}%</TableCell>
                                             </TableRow>
                                             <TableRow>
                                                 <TableCell>Porcentaje de similitud por métricas:</TableCell>
-                                                <TableCell>{res.metricas.similitud}</TableCell>
+                                                <TableCell>{res.metricas.similitud*100}%</TableCell>
                                             </TableRow>
                                             <TableRow>
-                                                <TableCell>Estatus de clasificación: </TableCell>
+                                                <TableCell>Porcentaje de similitud global:</TableCell>
+                                                <TableCell>{res.similitud*100}%</TableCell>
+                                            </TableRow>
+                                            <TableRow>
+                                                <TableCell>Clasificación de métricas: </TableCell>
                                                 <TableCell>{res.metricas.clasificacion}</TableCell>
                                             </TableRow>
                                         </TableBody>
