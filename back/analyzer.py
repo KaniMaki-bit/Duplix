@@ -554,8 +554,8 @@ def mark_code(file1: Archivo, file2: Archivo, matches: List[dl.Match]) -> Tuple[
         str_start_index_2 = file2.tokens[b].loc.begin_pos
         str_end_index_2 = file2.tokens[b + n - 1].loc.end_pos
 
-        left_mark = "{{{"
-        right_mark = f"}}}}}}{index}"
+        left_mark = f"(Inicio de bloque {index + 1})"
+        right_mark = f"(Fin de bloque {index + 1})"
 
         code1_str = _insert(code1_str, left_mark, str_start_index_1 + corrimiento_str1)
         corrimiento_str1 += len(left_mark)
