@@ -340,8 +340,8 @@ def metrics_deltas(metric_1: Metrics, metric_2: Metrics):
             },
             "Longitud promedio de variables": {
                 "delta": delta(metric_1.avg_var_length, metric_2.avg_var_length),
-                "archivo 1": metric_1.avg_var_length,
-                "archivo 2": metric_2.avg_var_length
+                "archivo 1": round(metric_1.avg_var_length, 2),
+                "archivo 2": round(metric_2.avg_var_length, 2)
             }
         },
         "expresiones": {
