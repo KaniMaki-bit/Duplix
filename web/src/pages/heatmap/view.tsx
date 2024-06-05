@@ -74,7 +74,7 @@ const HeatmapView: React.FC<Props> = ({
                                 </Typography>
                                 {Object.keys(data[est1]).map((est2: string, colIndex: number) => (
                                     <Grid item key={colIndex}>
-                                        <Link to="/" style={{ textDecoration: 'none' }}>
+                                        <Link to="/Students" state={{est1: est1, est2: est2}} style={{ textDecoration: 'none' }}>
                                             <Card
                                                 elevation={5}
                                                 sx={{

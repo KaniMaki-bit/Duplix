@@ -15,18 +15,22 @@ import Stack from "@mui/material";
 
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { dracula } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { useLocation } from "react-router-dom";
 
 const StudentsView: React.FC = () => {
+    const location = useLocation();
+
+    const [res, setRes] = useState<any>();
 
     const [lista, setLista] = useState<string[]>([]);
-    const [student_a, setStudent_a] = React.useState('');
-    const [student_b, setStudent_b] = React.useState('');
+    const [student_a, setStudent_a] = React.useState(location.state.est1 || "");
+    const [student_b, setStudent_b] = React.useState(location.state.est2 || "");
     let datosEstudiantes = null;
 
     const [codigo1, setCodigo1] = useState<string>('');
     const [codigo2, setCodigo2] = useState<string>('');
 
-    const [similitud_global,setSimilitud_global] = useState(0);
+    const [similitud_global, setSimilitud_global] = useState(0);
 
     const Item = styled(Paper)(({ theme }) => ({
         backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -80,6 +84,7 @@ const StudentsView: React.FC = () => {
                         console.warn('No hay datos disponibles en datosEstudiantes.');
                     }
                     console.log('Respuesta de la API:', response.data);
+                    setRes(response.data)
                 } catch (error) {
                     console.error('Error al obtener datos de la API:', error);
                 }
@@ -111,7 +116,6 @@ const StudentsView: React.FC = () => {
                 }}
             >
                 <Grid
-                    elevation={5}
                     sx={{
                         backgroundColor: "#333333",
                         color: "#FFFFFF",
@@ -142,7 +146,7 @@ const StudentsView: React.FC = () => {
                                 color: 'white',
                                 borderColor: "white",
                             }}
-                            onChange={handleStudentAChange}
+                            onChange={() => handleStudentAChange}
                         >
                             {Object.keys(studentMap).map((studentId) => (
                                 <MenuItem key={studentId} value={studentId}>
@@ -160,11 +164,11 @@ const StudentsView: React.FC = () => {
                             labelId="demo-simple-select-label"
                             id="demo-simple-select"
                             value={student_b}
-                            sx={{ 
+                            sx={{
                                 color: 'white',
-                             }}
+                            }}
                             label="Estudiante2"
-                            onChange={handleStudentBChange}
+                            onChange={() => handleStudentBChange}
                         >
                             {Object.keys(studentMap).map((studentId) => (
                                 <MenuItem key={studentId} value={studentId}>
@@ -178,26 +182,99 @@ const StudentsView: React.FC = () => {
                     </SyntaxHighlighter>
                 </Grid>
                 <Grid
-                    elevation={5}
+                    container
                     sx={{
                         backgroundColor: "#333333",
                         color: "#FFFFFF",
                         p: 4,
                         width: "600px",
-                        // minHeight: "300px",
                     }}
                 >
-                    <Typography variant="subtitle1" gutterBottom
-                        sx={{
-                            marginBottom: 2,
-                            textAlign: 'initial'
-                        }}
-                    >
-                        En esta sección puede visualizar la similitudes de los códigos de acuerdo a sus cadenas de texto, métricas, y su similitud en conjunto:
-                    </Typography>
-                    <Box >
-                   
-                    </Box>
+                    {
+                        res && (
+                            <>
+                                <Grid item xs={12}>
+                                    <Typography>
+                                        Procentaje de similitud: {res.similitud}
+                                    </Typography>
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <Typography>
+                                        Estatus: {res.metricas.clasificacion}
+                                    </Typography>
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <Typography variant="h5">
+                                        Expresiones
+                                    </Typography>
+                                </Grid>
+                                {
+                                    Object.keys(res.metricas.deltas.expresiones).map((key) => (
+                                        <Grid item xs={12}>
+                                            <Typography>
+                                                {key}:
+                                            </Typography>
+                                            <Typography>
+                                                Est1: {res.metricas.deltas.expresiones[key]["archivo 1"]}
+                                            </Typography>
+                                            <Typography>
+                                                Est2: {res.metricas.deltas.expresiones[key]["archivo 2"]}
+                                            </Typography>
+                                            <Typography>
+                                                Clasificacion: {res.metricas.deltas.expresiones[key]["clasificacion"]}
+                                            </Typography>
+                                        </Grid>
+                                    ))
+                                }
+                                <Grid item xs={12}>
+                                    <Typography variant="h5">
+                                        Flujo de Control
+                                    </Typography>
+                                </Grid>
+                                {
+                                    Object.keys(res.metricas.deltas["flujo de control"]).map((key) => (
+                                        <Grid item xs={12}>
+                                            <Typography>
+                                                {key}:
+                                            </Typography>
+                                            <Typography>
+                                                Est1: {res.metricas.deltas["flujo de control"][key]["archivo 1"]}
+                                            </Typography>
+                                            <Typography>
+                                                Est2: {res.metricas.deltas["flujo de control"][key]["archivo 2"]}
+                                            </Typography>
+                                            <Typography>
+                                                Clasificacion: {res.metricas.deltas["flujo de control"][key]["clasificacion"]}
+                                            </Typography>
+                                        </Grid>
+                                    ))
+                                }
+                                <Grid item xs={12}>
+                                    <Typography variant="h5">
+                                        Layout
+                                    </Typography>
+                                </Grid>
+                                {
+                                    Object.keys(res.metricas.deltas.layout).map((key) => (
+                                        <Grid item xs={12}>
+                                            <Typography>
+                                                {key}:
+                                            </Typography>
+                                            <Typography>
+                                                Est1: {res.metricas.deltas.layout[key]["archivo 1"]}
+                                            </Typography>
+                                            <Typography>
+                                                Est2: {res.metricas.deltas.layout[key]["archivo 2"]}
+                                            </Typography>
+                                            <Typography>
+                                                Clasificacion: {res.metricas.deltas.layout[key]["clasificacion"]}
+                                            </Typography>
+                                        </Grid>
+                                    ))
+                                }
+                            </>
+                        )
+                    }
                 </Grid>
 
             </Grid>
