@@ -1,16 +1,21 @@
 import { Button, Grid, Paper, Typography } from "@mui/material";
 import Navbar from "../../components/navbar";
 import React from "react";
-import { Upload } from "@mui/icons-material";
+import { ArrowForward, Upload } from "@mui/icons-material";
+import { LoadingButton } from '@mui/lab';
 
 interface Props {
     fileName: string | null;
     handleUpload: (event: React.ChangeEvent<HTMLInputElement>) => void;
+    allow: boolean;
+    loadingUpload: boolean;
 }
 
 const UploadView: React.FC<Props> = ({
     fileName,
-    handleUpload
+    handleUpload,
+    allow,
+    loadingUpload,
 }) => {
     return (
         <>
@@ -84,7 +89,10 @@ const UploadView: React.FC<Props> = ({
                                     component="span"
                                     sx={{
                                         backgroundColor: "#4D17BF",
-                                        textTransform: "none"
+                                        textTransform: "none",
+                                        ":hover": {
+                                            backgroundColor: "#4D17BF",
+                                        }
                                     }}
                                 >
                                     Cargar archivo
@@ -103,14 +111,20 @@ const UploadView: React.FC<Props> = ({
                             display="flex"
                             justifyContent="flex-end"
                         >
-                            <Button
+                            <LoadingButton
                                 variant="contained"
+                                disabled={!allow}
+                                loading={loadingUpload}
                                 sx={{
-                                    backgroundColor: "#4D17BF"
+                                    backgroundColor: "#4D17BF",
+                                    ":hover": {
+                                        backgroundColor: "#4D17BF",
+                                    }
                                 }}
+                                endIcon={<ArrowForward/>}
                             >
                                 Comenzar analisis
-                            </Button>
+                            </LoadingButton>
                         </Grid>
                     </Grid>
                 </Paper>
