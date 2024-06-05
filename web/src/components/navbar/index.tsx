@@ -44,6 +44,25 @@ const Navbar = () => {
                     </Typography>
                     <Menu />
                 </Grid>
+            ) : route === "/Students" ? (
+                <Grid container
+                    justifyContent="space-between"
+                    alignItems="center"
+                    pr={2}
+                >
+                    <IconButton
+                        sx={{
+                            color: "#FFFFFF"
+                        }}
+                        onClick={() => navigate(-1)}
+                    >
+                        <ArrowBackIosNew />
+                    </IconButton>
+                    <Typography>
+                        LUCY - Herramienta de deteccion de plagio
+                    </Typography>
+                    <Menu />
+                </Grid>
             ) : (
                 <></>
             )}
