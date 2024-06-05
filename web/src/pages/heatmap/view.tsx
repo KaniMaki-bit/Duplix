@@ -29,6 +29,11 @@ const HeatmapView: React.FC<Props> = ({
                     <>
                         {/* Header Row */}
                         <Grid container direction="row" alignContent="center" justifyContent="center" gap={0.5}>
+                            <Grid item xs={12}>
+                                <Typography variant="h3" mb={5}>
+                                    Heatmap
+                                </Typography>
+                            </Grid>
                             <Grid item>
                                 <Typography variant="caption" sx={{ mr: `${600 / estudiantes.length}px` }} />
                             </Grid>
@@ -74,7 +79,7 @@ const HeatmapView: React.FC<Props> = ({
                                 </Typography>
                                 {Object.keys(data[est1]).map((est2: string, colIndex: number) => (
                                     <Grid item key={colIndex}>
-                                        <Link to="/Students" state={{est1: est1, est2: est2}} style={{ textDecoration: 'none' }}>
+                                        <Link to="/Students" state={{ est1: est1, est2: est2 }} style={{ textDecoration: 'none' }}>
                                             <Card
                                                 elevation={5}
                                                 sx={{
