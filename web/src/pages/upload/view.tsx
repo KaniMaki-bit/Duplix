@@ -3,6 +3,7 @@ import Navbar from "../../components/navbar";
 import React from "react";
 import { ArrowForward, Upload } from "@mui/icons-material";
 import { LoadingButton } from '@mui/lab';
+import { useNavigate } from "react-router-dom";
 
 interface Props {
     fileName: string | null;
@@ -17,6 +18,8 @@ const UploadView: React.FC<Props> = ({
     allow,
     loadingUpload,
 }) => {
+    const navigate = useNavigate();
+
     return (
         <>
             <Navbar />
@@ -115,6 +118,7 @@ const UploadView: React.FC<Props> = ({
                                 variant="contained"
                                 disabled={!allow}
                                 loading={loadingUpload}
+                                onClick={() => navigate("/Heatmap")}
                                 sx={{
                                     backgroundColor: "#4D17BF",
                                     ":hover": {

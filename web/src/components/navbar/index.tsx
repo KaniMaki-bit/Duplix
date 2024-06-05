@@ -22,10 +22,10 @@ const Navbar = () => {
                     alignItems="center"
                 >
                     <Typography>
-                        LUCY - Herramienta de deteccion de plagio
+                        DUPLIX - Herramienta de deteccion de plagio
                     </Typography>
                 </Grid>
-            ) : route === "/Upload" ? (
+            ) : (
                 <Grid container
                     justifyContent="space-between"
                     alignItems="center"
@@ -40,12 +40,10 @@ const Navbar = () => {
                         <ArrowBackIosNew />
                     </IconButton>
                     <Typography>
-                        LUCY - Herramienta de deteccion de plagio
+                        DUPLIX - Herramienta de deteccion de plagio
                     </Typography>
                     <Menu />
                 </Grid>
-            ) : (
-                <></>
             )}
         </Grid>
     );
