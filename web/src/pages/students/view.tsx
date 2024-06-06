@@ -4,6 +4,7 @@ import axios from 'axios';
 import Navbar from "../../components/navbar";
 
 import { Button, Grid, Paper, Typography } from "@mui/material";
+import { TableContainer, Table, TableHead, TableBody, TableRow, TableCell } from '@mui/material';
 import Box from '@mui/material/Box';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
@@ -85,6 +86,8 @@ const StudentsView: React.FC = () => {
                     }
                     console.log('Respuesta de la API:', response.data);
                     setRes(response.data)
+                    // const porcentaje_similitud = response.data.similitud * 100;
+
                 } catch (error) {
                     console.error('Error al obtener datos de la API:', error);
                 }
@@ -117,24 +120,36 @@ const StudentsView: React.FC = () => {
             >
                 <Grid
                     sx={{
-                        backgroundColor: "#333333",
+                        backgroundColor: "#CFCFCF",
                         color: "#FFFFFF",
                         p: 4,
                         width: "600px",
                         // minHeight: "300px",
                     }}
                 >
+                    <Grid item xs={12}
+                        sx={{
+                            p: 1
+                        }}>
+                        <Typography variant="h5"
+                        sx={{
+                            color: 'black',
+                        }}>
+                            Análisis por bloques
+                        </Typography>
+                    </Grid>
                     <Typography variant="subtitle1" gutterBottom
                         sx={{
                             marginBottom: 2,
-                            textAlign: 'initial'
+                            textAlign: 'initial',
+                            color: 'black',
                         }}
                     >
                         A continuación seleccione los archivos correspondientes a analizar:
                     </Typography>
-                    <FormControl fullWidth sx={{ color: 'white' }}>
+                    <FormControl fullWidth sx={{ color: 'black' }}>
                         <InputLabel id="demo-simple-select-label" sx={{
-                            color: 'white',
+                            color: 'black',
                         }}
                         >Estudiante 1</InputLabel>
                         <Select
@@ -143,7 +158,7 @@ const StudentsView: React.FC = () => {
                             value={student_a}
                             label="Estudiante1"
                             sx={{
-                                color: 'white',
+                                color: 'black',
                                 borderColor: "white",
                             }}
                             onChange={() => handleStudentAChange}
@@ -159,13 +174,13 @@ const StudentsView: React.FC = () => {
                         {codigo1}
                     </SyntaxHighlighter>
                     <FormControl fullWidth>
-                        <InputLabel id="demo-simple-select-label" sx={{ color: 'white' }}>Estudiante 2</InputLabel>
+                        <InputLabel id="demo-simple-select-label" sx={{ color: 'black' }}>Estudiante 2</InputLabel>
                         <Select
                             labelId="demo-simple-select-label"
                             id="demo-simple-select"
                             value={student_b}
                             sx={{
-                                color: 'white',
+                                color: 'black',
                             }}
                             label="Estudiante2"
                             onChange={() => handleStudentBChange}
@@ -193,85 +208,154 @@ const StudentsView: React.FC = () => {
                     {
                         res && (
                             <>
-                                <Grid item xs={12}>
-                                    <Typography>
-                                        Procentaje de similitud: {res.similitud}
+                                <Grid item xs={12}
+                                    sx={{
+                                        p: 1
+                                    }}>
+                                    <Typography variant="h5">
+                                        Resumen de similitud
                                     </Typography>
                                 </Grid>
-                                <Grid item xs={12}>
-                                    <Typography>
-                                        Estatus: {res.metricas.clasificacion}
-                                    </Typography>
-                                </Grid>
-                                <Grid item xs={12}>
+                                <TableContainer component={Paper}>
+                                    <Table>
+                                        <TableBody>
+                                            <TableRow>
+                                                <TableCell>Porcentaje de similitud por bloques:</TableCell>
+                                                <TableCell>{res.codigo.similitud*100}%</TableCell>
+                                            </TableRow>
+                                            <TableRow>
+                                                <TableCell>Porcentaje de similitud por métricas:</TableCell>
+                                                <TableCell>{res.metricas.similitud*100}%</TableCell>
+                                            </TableRow>
+                                            <TableRow>
+                                                <TableCell>Porcentaje de similitud global:</TableCell>
+                                                <TableCell>{res.similitud*100}%</TableCell>
+                                            </TableRow>
+                                            <TableRow>
+                                                <TableCell>Clasificación de métricas: </TableCell>
+                                                <TableCell>{res.metricas.clasificacion}</TableCell>
+                                            </TableRow>
+                                        </TableBody>
+                                    </Table>
+                                </TableContainer>
+                                <Grid item
+                                    xs={12}
+                                    sx={{
+                                        p: 2
+                                    }}>
                                     <Typography variant="h5">
                                         Expresiones
                                     </Typography>
+                                    <Typography variant="subtitle1" gutterBottom
+                                        sx={{
+                                            textAlign: 'initial',
+                                            color: 'white',
+                                        }}
+                                    >
+                                        En esta sección se muestra un análisis de métricas de la categoría de expresiones de cada uno de los archivos.
+                                    </Typography>
                                 </Grid>
-                                {
-                                    Object.keys(res.metricas.deltas.expresiones).map((key) => (
-                                        <Grid item xs={12}>
-                                            <Typography>
-                                                {key}:
-                                            </Typography>
-                                            <Typography>
-                                                Est1: {res.metricas.deltas.expresiones[key]["archivo 1"]}
-                                            </Typography>
-                                            <Typography>
-                                                Est2: {res.metricas.deltas.expresiones[key]["archivo 2"]}
-                                            </Typography>
-                                            <Typography>
-                                                Clasificacion: {res.metricas.deltas.expresiones[key]["clasificacion"]}
-                                            </Typography>
-                                        </Grid>
-                                    ))
-                                }
-                                <Grid item xs={12}>
+                                <TableContainer component={Paper}>
+                                    <Table>
+                                        <TableHead>
+                                            <TableRow>
+                                                <TableCell>Expresión</TableCell>
+                                                <TableCell>Est1</TableCell>
+                                                <TableCell>Est2</TableCell>
+                                                <TableCell>Clasificación</TableCell>
+                                            </TableRow>
+                                        </TableHead>
+                                        <TableBody>
+                                            {Object.keys(res.metricas.deltas.expresiones).map((key) => (
+                                                <TableRow key={key}>
+                                                    <TableCell>{key}:</TableCell>
+                                                    <TableCell>{res.metricas.deltas.expresiones[key]["archivo 1"]}</TableCell>
+                                                    <TableCell>{res.metricas.deltas.expresiones[key]["archivo 2"]}</TableCell>
+                                                    <TableCell>{res.metricas.deltas.expresiones[key]["clasificacion"]}</TableCell>
+                                                </TableRow>
+                                            ))}
+                                        </TableBody>
+                                    </Table>
+                                </TableContainer>
+                                <Grid item
+                                    xs={12}
+                                    sx={{
+                                        p: 2
+                                    }}>
                                     <Typography variant="h5">
                                         Flujo de Control
                                     </Typography>
+                                    <Typography variant="subtitle1" gutterBottom
+                                        sx={{
+                                            textAlign: 'initial',
+                                            color: 'white',
+                                        }}
+                                    >
+                                        En este apartado se muestra un análisis de métricas de la categoría del flujo de control de cada uno de los archivos, donde se describe la secuencia en la que se ejecutan las instrucciones.
+                                    </Typography>
                                 </Grid>
-                                {
-                                    Object.keys(res.metricas.deltas["flujo de control"]).map((key) => (
-                                        <Grid item xs={12}>
-                                            <Typography>
-                                                {key}:
-                                            </Typography>
-                                            <Typography>
-                                                Est1: {res.metricas.deltas["flujo de control"][key]["archivo 1"]}
-                                            </Typography>
-                                            <Typography>
-                                                Est2: {res.metricas.deltas["flujo de control"][key]["archivo 2"]}
-                                            </Typography>
-                                            <Typography>
-                                                Clasificacion: {res.metricas.deltas["flujo de control"][key]["clasificacion"]}
-                                            </Typography>
-                                        </Grid>
-                                    ))
-                                }
-                                <Grid item xs={12}>
+                                <TableContainer component={Paper}>
+                                    <Table>
+                                        <TableHead>
+                                            <TableRow>
+                                                <TableCell>Expresión</TableCell>
+                                                <TableCell>Est1</TableCell>
+                                                <TableCell>Est2</TableCell>
+                                                <TableCell>Clasificación</TableCell>
+                                            </TableRow>
+                                        </TableHead>
+                                        <TableBody>
+                                            {Object.keys(res.metricas.deltas["flujo de control"]).map((key) => (
+                                                <TableRow key={key}>
+                                                    <TableCell>{key}:</TableCell>
+                                                    <TableCell>{res.metricas.deltas["flujo de control"][key]["archivo 1"]}</TableCell>
+                                                    <TableCell>{res.metricas.deltas["flujo de control"][key]["archivo 2"]}</TableCell>
+                                                    <TableCell>{res.metricas.deltas["flujo de control"][key]["clasificacion"]}</TableCell>
+                                                </TableRow>
+                                            ))}
+                                        </TableBody>
+                                    </Table>
+                                </TableContainer>
+                                <Grid item
+                                    xs={12}
+                                    sx={{
+                                        p: 2
+                                    }}
+                                >
                                     <Typography variant="h5">
                                         Layout
                                     </Typography>
+                                    <Typography variant="subtitle1" gutterBottom
+                                        sx={{
+                                            textAlign: 'initial',
+                                            color: 'white',
+                                        }}
+                                    >
+                                        En este último apartado se muestra un análisis de métricas de la categoría de layout, donde se analisa la organización y la disposición visual del código.
+                                    </Typography>
                                 </Grid>
-                                {
-                                    Object.keys(res.metricas.deltas.layout).map((key) => (
-                                        <Grid item xs={12}>
-                                            <Typography>
-                                                {key}:
-                                            </Typography>
-                                            <Typography>
-                                                Est1: {res.metricas.deltas.layout[key]["archivo 1"]}
-                                            </Typography>
-                                            <Typography>
-                                                Est2: {res.metricas.deltas.layout[key]["archivo 2"]}
-                                            </Typography>
-                                            <Typography>
-                                                Clasificacion: {res.metricas.deltas.layout[key]["clasificacion"]}
-                                            </Typography>
-                                        </Grid>
-                                    ))
-                                }
+                                <TableContainer component={Paper}>
+                                    <Table>
+                                        <TableHead>
+                                            <TableRow>
+                                                <TableCell>Expresión</TableCell>
+                                                <TableCell>Est1</TableCell>
+                                                <TableCell>Est2</TableCell>
+                                                <TableCell>Clasificación</TableCell>
+                                            </TableRow>
+                                        </TableHead>
+                                        <TableBody>
+                                            {Object.keys(res.metricas.deltas.layout).map((key) => (
+                                                <TableRow key={key}>
+                                                    <TableCell>{key}:</TableCell>
+                                                    <TableCell>{res.metricas.deltas.layout[key]["archivo 1"]}</TableCell>
+                                                    <TableCell>{res.metricas.deltas.layout[key]["archivo 2"]}</TableCell>
+                                                    <TableCell>{res.metricas.deltas.layout[key]["clasificacion"]}</TableCell>
+                                                </TableRow>
+                                            ))}
+                                        </TableBody>
+                                    </Table>
+                                </TableContainer>
                             </>
                         )
                     }
